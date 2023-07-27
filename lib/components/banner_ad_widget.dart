@@ -10,6 +10,6 @@ class AppBannerAdView extends StatelessWidget {
     return MaxAdView(
         adUnitId: bannerUnitId,
         adFormat: AdFormat.banner,
-        isAutoRefreshEnabled: false);
+        isAutoRefreshEnabled: true);
   }
 }

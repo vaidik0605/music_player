@@ -50,4 +50,5 @@ class AppStringConstant {
   static const String delete = 'Delete';
   static const String deleted = 'Deleted';
   static const String removeFrom = 'Remove From';
+  static const String severError = 'Sever Error';
 }

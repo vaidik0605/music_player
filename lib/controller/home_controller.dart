@@ -1,8 +1,13 @@
+import 'package:applovin_max/applovin_max.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_player/helper/audio_query_helper.dart';
 import 'package:music_player/helper/media_item_converter.dart';
+import 'package:music_player/main.dart';
+import 'package:music_player/model/ad_model.dart';
+import 'package:music_player/pages/home_page/home_page.dart';
+import 'package:music_player/service/rest_service.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
@@ -94,4 +99,26 @@ class HomeController extends GetxController{
     update();
   }
 
+  Future<void> loadAds() async {
+    isLoading = true;
+    update();
+    Map<String, dynamic>? map = await RestService.getRestMethod();
+    if (map != null && map.isNotEmpty) {
+      AdModel adModel = AdModel.fromJson(map);
+      if (adModel.data != null) {
+        showAdOnCount = adModel.data!.intCount ?? 0;
+        bannerAdDividerCount = adModel.data!.bannerCount ?? 0;
+        logs("showAdOnCount --> $showAdOnCount");
+      }
+      Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
+      if (sdkConfiguration != null) {
+        initializeBannerAds();
+        initializeInterstitialAds();
+        initializeAppOpenAds();
+      }
+    }
+    await getData();
+    isLoading = false;
+    update();
+  }
 }

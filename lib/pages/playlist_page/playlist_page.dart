@@ -99,7 +99,7 @@ class PlaylistPage extends StatelessWidget {
     return Expanded(
       child: ListView.separated(
         separatorBuilder: (context, index) {
-          if (index % bannerAdDividerCount == 0) {
+          if (bannerAdDividerCount != 0 && index % bannerAdDividerCount == 0) {
             return const AppBannerAdView();
           }
           return const SizedBox();

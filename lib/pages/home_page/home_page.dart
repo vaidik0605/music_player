@@ -13,7 +13,6 @@ import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/home_controller.dart';
 import 'package:music_player/controller/music_page_controller.dart';
 import 'package:music_player/controller/player_controller.dart';
-import 'package:music_player/main.dart';
 import 'package:music_player/pages/artist_page/artist_page.dart';
 import 'package:music_player/pages/music_page/music_page.dart';
 import 'package:music_player/pages/album_page/album_page.dart';
@@ -23,20 +22,14 @@ import 'package:music_player/utils/all_logs.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
 const String bannerUnitId = 'c70d6e6ded845893';
 const String interstitialUnitId = '04646e7d1e743e5b';
 const appOpenAdId = '1b937d7a92fe7706';
 int adIntersTitiaCount = 0;
+int showAdOnCount = 0;
 int interstitialRetryAttempt = 0;
-int bannerAdDividerCount = 3;
-bool isAppOpenAdInitialized = false;
+int bannerAdDividerCount = 0;
+bool isAppOpenAdInitialized = true;
 
 void initializeInterstitialAds() {
   AppLovinMAX.setInterstitialListener(InterstitialListener(
@@ -100,13 +93,20 @@ void initializeAppOpenAds() {
 }
 
 Future<void> showInterstitialAd() async {
-  if (adIntersTitiaCount == 2) {
+  if (showAdOnCount != 0 && adIntersTitiaCount == showAdOnCount) {
     audioPlayer.stop();
     bool isReady = (await AppLovinMAX.isInterstitialReady(interstitialUnitId))!;
     if (isReady) {
       AppLovinMAX.showInterstitial(interstitialUnitId);
     }
   }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
@@ -116,6 +116,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     super.dispose();
   }
+
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
     switch (state) {
@@ -138,21 +139,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     bool isReady = (await AppLovinMAX.isAppOpenAdReady(appOpenAdId))!;
     if (isReady) {
       AppLovinMAX.showAppOpenAd(appOpenAdId);
+      audioPlayer.stop();
     } else {
       AppLovinMAX.loadAppOpenAd(appOpenAdId);
+      audioPlayer.stop();
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(
       init: HomeController(),
       initState: (state) async {
-        Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
-        if (sdkConfiguration != null) {
-          initializeInterstitialAds();
-          initializeBannerAds();
-          initializeAppOpenAds();
-        }
         WidgetsBinding.instance.addObserver(this);
         audioPlayer.positionStream.listen((event) async {
           if (event == audioPlayer.duration) {
@@ -162,9 +160,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         });
         Future.delayed(
           const Duration(milliseconds: 150),
-          () async {
+          () {
             HomeController homeController = Get.find<HomeController>();
-            homeController.getData();
+            homeController.loadAds();
           },
         );
       },

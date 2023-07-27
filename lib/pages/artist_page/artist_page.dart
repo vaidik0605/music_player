@@ -55,7 +55,7 @@ class _ArtistPageState extends State<ArtistPage> {
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) {
-          if (index % bannerAdDividerCount == 0) {
+          if (bannerAdDividerCount != 0 && index % bannerAdDividerCount == 0) {
             return const AppBannerAdView();
           }
           return const SizedBox();

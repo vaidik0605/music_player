@@ -5,6 +5,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_player/controller/home_controller.dart';
 import 'package:music_player/helper/media_item_converter.dart';
 import 'package:music_player/pages/home_page/home_page.dart';
 import 'package:music_player/utils/all_logs.dart';
@@ -23,6 +24,7 @@ class AudioPlayerController extends GetxController {
   Duration pickSleepTime = const Duration(seconds: 0);
   Timer? durationTimer;
   Timer? countTimer;
+  HomeController homeController = Get.put(HomeController());
 
   Future<void> initializeValue(
       {required int index,

@@ -32,9 +32,10 @@ class MusicPage extends StatelessWidget {
                     preferredSize: Size.zero, child: SizedBox()),
             body: Column(
               children: [
+                (controller.songList.isNotEmpty)?
                 Expanded(
                   child: ListView.separated(separatorBuilder: (context, index) {
-                    if(index % bannerAdDividerCount == 0){
+                    if(bannerAdDividerCount != 0 && index % bannerAdDividerCount == 0){
                       return const AppBannerAdView();
                     }
                     return const SizedBox();
@@ -562,7 +563,7 @@ class MusicPage extends StatelessWidget {
                       );
                     },
                   ),
-                ),
+                ) : const Center(child: AppText(title: AppStringConstant.noSongFound),),
               ],
             ));
       },
