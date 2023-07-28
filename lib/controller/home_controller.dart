@@ -106,15 +106,19 @@ class HomeController extends GetxController{
     if (map != null && map.isNotEmpty) {
       AdModel adModel = AdModel.fromJson(map);
       if (adModel.data != null) {
+        logs("AdModel ---> ${adModel.toJson()}");
         showAdOnCount = adModel.data!.intCount ?? 0;
         bannerAdDividerCount = adModel.data!.bannerCount ?? 0;
-        logs("showAdOnCount --> $showAdOnCount");
-      }
-      Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
-      if (sdkConfiguration != null) {
-        initializeBannerAds();
-        initializeInterstitialAds();
-        initializeAppOpenAds();
+        bannerUnitId = adModel.data!.maxBanner ?? '';
+        interstitialUnitId = adModel.data!.maxInt ?? '';
+        appOpenAdId = adModel.data!.appOpen ?? '';
+        isShowAds = adModel.data!.adsStatus;
+        Map? sdkConfiguration = await AppLovinMAX.initialize(sdkKey);
+        if (sdkConfiguration != null && adModel.data!.adsStatus) {
+          initializeBannerAds();
+          initializeInterstitialAds();
+          initializeAppOpenAds();
+        }
       }
     }
     await getData();

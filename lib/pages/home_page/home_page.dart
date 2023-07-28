@@ -22,14 +22,15 @@ import 'package:music_player/utils/all_logs.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-const String bannerUnitId = 'c70d6e6ded845893';
-const String interstitialUnitId = '04646e7d1e743e5b';
-const appOpenAdId = '1b937d7a92fe7706';
+String bannerUnitId = '';
+String interstitialUnitId = '';
+String appOpenAdId = '';
 int adIntersTitiaCount = 0;
 int showAdOnCount = 0;
 int interstitialRetryAttempt = 0;
 int bannerAdDividerCount = 0;
-bool isAppOpenAdInitialized = true;
+bool isAppOpenAdInitialized = false;
+bool isShowAds = false;
 
 void initializeInterstitialAds() {
   AppLovinMAX.setInterstitialListener(InterstitialListener(
@@ -71,29 +72,37 @@ void initializeInterstitialAds() {
 }
 
 void initializeBannerAds() {
-  AppLovinMAX.createBanner(bannerUnitId, AdViewPosition.bottomCenter);
+  if (bannerUnitId.isNotEmpty && isShowAds) {
+    AppLovinMAX.createBanner(bannerUnitId, AdViewPosition.bottomCenter);
+  }
 }
 
 void initializeAppOpenAds() {
-  AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
-    onAdLoadedCallback: (ad) {},
-    onAdLoadFailedCallback: (adUnitId, error) {},
-    onAdDisplayedCallback: (ad) {},
-    onAdDisplayFailedCallback: (ad, error) {
-      AppLovinMAX.loadAppOpenAd(appOpenAdId);
-    },
-    onAdClickedCallback: (ad) {},
-    onAdHiddenCallback: (ad) {
-      AppLovinMAX.loadAppOpenAd(appOpenAdId);
-    },
-    onAdRevenuePaidCallback: (ad) {},
-  ));
-
-  AppLovinMAX.loadAppOpenAd(appOpenAdId);
+  if (appOpenAdId.isNotEmpty && isShowAds) {
+    AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
+      onAdLoadedCallback: (ad) {},
+      onAdLoadFailedCallback: (adUnitId, error) {},
+      onAdDisplayedCallback: (ad) {},
+      onAdDisplayFailedCallback: (ad, error) {
+        AppLovinMAX.loadAppOpenAd(appOpenAdId);
+      },
+      onAdClickedCallback: (ad) {},
+      onAdHiddenCallback: (ad) {
+        logs("On hide ----> ");
+        AppLovinMAX.loadAppOpenAd(appOpenAdId);
+      },
+      onAdRevenuePaidCallback: (ad) {},
+    ));
+    logs("APPOPEN --->");
+    AppLovinMAX.loadAppOpenAd(appOpenAdId);
+  }
 }
 
 Future<void> showInterstitialAd() async {
-  if (showAdOnCount != 0 && adIntersTitiaCount == showAdOnCount) {
+  if (isShowAds &&
+      interstitialUnitId.isNotEmpty &&
+      showAdOnCount != 0 &&
+      adIntersTitiaCount == showAdOnCount) {
     audioPlayer.stop();
     bool isReady = (await AppLovinMAX.isInterstitialReady(interstitialUnitId))!;
     if (isReady) {
@@ -119,6 +128,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
+    logs("state ---> $state");
     switch (state) {
       case AppLifecycleState.resumed:
         await showAdIfReady();
@@ -132,17 +142,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   }
 
   Future<void> showAdIfReady() async {
-    if (isAppOpenAdInitialized) {
-      return;
-    }
+    if (isShowAds && appOpenAdId.isNotEmpty) {
+      if (isAppOpenAdInitialized) {
+        return;
+      }
 
-    bool isReady = (await AppLovinMAX.isAppOpenAdReady(appOpenAdId))!;
-    if (isReady) {
-      AppLovinMAX.showAppOpenAd(appOpenAdId);
-      audioPlayer.stop();
-    } else {
-      AppLovinMAX.loadAppOpenAd(appOpenAdId);
-      audioPlayer.stop();
+      bool isReady = (await AppLovinMAX.isAppOpenAdReady(appOpenAdId))!;
+      logs("isReady --> $isReady");
+      if (isReady) {
+        AppLovinMAX.showAppOpenAd(appOpenAdId);
+        audioPlayer.stop();
+      } else {
+        AppLovinMAX.loadAppOpenAd(appOpenAdId);
+        audioPlayer.play();
+      }
     }
   }
 

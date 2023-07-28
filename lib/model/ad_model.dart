@@ -36,6 +36,7 @@ class Data {
   String? maxInt;
   String? maxBanner;
   String? maxNative;
+  String? appOpen;
   bool adsStatus;
   int? intCount;
   int? bannerCount;
@@ -46,6 +47,7 @@ class Data {
     this.maxNative,
     this.adsStatus = false,
     this.intCount,
+    this.appOpen,
     this.bannerCount,
   });
 
@@ -56,6 +58,7 @@ class Data {
     adsStatus: json["ads_status"],
     intCount: json["int_count"],
     bannerCount: json["banner_count"],
+    appOpen: json["app_open"]
   );
 
   Map<String, dynamic> toJson() => {
@@ -65,5 +68,6 @@ class Data {
     "ads_status": adsStatus,
     "int_count": intCount,
     "banner_count": bannerCount,
+    "app_open":appOpen
   };
 }

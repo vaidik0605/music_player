@@ -7,9 +7,13 @@ class AppBannerAdView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaxAdView(
-        adUnitId: bannerUnitId,
-        adFormat: AdFormat.banner,
-        isAutoRefreshEnabled: true);
+    if(isShowAds && bannerUnitId.isNotEmpty){
+      return MaxAdView(
+          adUnitId: bannerUnitId,
+          adFormat: AdFormat.banner,
+          isAutoRefreshEnabled: true);
+    }
+    return SizedBox();
+
   }
 }
