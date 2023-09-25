@@ -58,8 +58,7 @@ dependencies:
   #Toast message
   bot_toast: ^4.0.4
   #Audio query
-  on_audio_query: ^2.9.0
-  get_it: ^7.6.0
+  on_audio_query: ^2.6.1
   audio_service: ^0.18.10
   just_audio: ^0.9.34
   just_audio_background: ^0.0.1-beta.10
@@ -67,7 +66,9 @@ dependencies:
   path_provider: ^2.0.15
 
   # Ads
-  applovin_max: ^3.0.1
+  applovin_max: ^3.2.0
+  google_mobile_ads: ^3.0.0
+
 
   intl: ^0.18.0
 
@@ -77,6 +78,9 @@ dependencies:
   #Images
   flutter_svg: ^2.0.7
   cached_network_image: ^3.2.3
+
+  sqflite: ^2.3.0
+  path: ^1.8.3
 
 dev_dependencies:
   flutter_test:

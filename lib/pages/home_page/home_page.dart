@@ -13,103 +13,19 @@ import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/home_controller.dart';
 import 'package:music_player/controller/music_page_controller.dart';
 import 'package:music_player/controller/player_controller.dart';
+import 'package:music_player/model/ad_model.dart';
 import 'package:music_player/pages/artist_page/artist_page.dart';
 import 'package:music_player/pages/music_page/music_page.dart';
 import 'package:music_player/pages/album_page/album_page.dart';
 import 'package:music_player/pages/playlist_page/playlist_page.dart';
 import 'package:music_player/routes/route_constant.dart';
+import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
-String bannerUnitId = '';
-String interstitialUnitId = '';
-String appOpenAdId = '';
-int adIntersTitiaCount = 0;
-int showAdOnCount = 0;
-int interstitialRetryAttempt = 0;
-int bannerAdDividerCount = 0;
-bool isAppOpenAdInitialized = false;
-bool isShowAds = false;
 
-void initializeInterstitialAds() {
-  AppLovinMAX.setInterstitialListener(InterstitialListener(
-    onAdLoadedCallback: (ad) {
-      logs('Interstitial ad loaded from ${ad.networkName}');
-      interstitialRetryAttempt = 0;
-    },
-    onAdLoadFailedCallback: (adUnitId, error) {
-      interstitialRetryAttempt = interstitialRetryAttempt + 1;
-      int retryDelay = pow(2, min(6, interstitialRetryAttempt)).toInt();
-
-      logs(
-          'Interstitial ad failed to load with code ${error.code} - retrying in ${retryDelay}s');
-
-      Future.delayed(Duration(milliseconds: retryDelay * 1000), () {
-        AppLovinMAX.loadInterstitial(interstitialUnitId);
-      });
-    },
-    onAdDisplayedCallback: (ad) {
-      logs("onAdDisplayedCallback --->");
-    },
-    onAdDisplayFailedCallback: (ad, error) {
-      logs('onAdDisplayFailedCallback ---> ${error.message}');
-    },
-    onAdClickedCallback: (ad) {
-      logs("onAdClickedCallback --->");
-    },
-    onAdHiddenCallback: (ad) {
-      logs("onAdHiddenCallback --->");
-      adIntersTitiaCount = 0;
-      initializeInterstitialAds();
-      audioPlayer.seekToNext();
-      audioPlayer.play();
-    },
-  ));
-
-  // Load the first interstitial
-  AppLovinMAX.loadInterstitial(interstitialUnitId);
-}
-
-void initializeBannerAds() {
-  if (bannerUnitId.isNotEmpty && isShowAds) {
-    AppLovinMAX.createBanner(bannerUnitId, AdViewPosition.bottomCenter);
-  }
-}
-
-void initializeAppOpenAds() {
-  if (appOpenAdId.isNotEmpty && isShowAds) {
-    AppLovinMAX.setAppOpenAdListener(AppOpenAdListener(
-      onAdLoadedCallback: (ad) {},
-      onAdLoadFailedCallback: (adUnitId, error) {},
-      onAdDisplayedCallback: (ad) {},
-      onAdDisplayFailedCallback: (ad, error) {
-        AppLovinMAX.loadAppOpenAd(appOpenAdId);
-      },
-      onAdClickedCallback: (ad) {},
-      onAdHiddenCallback: (ad) {
-        logs("On hide ----> ");
-        AppLovinMAX.loadAppOpenAd(appOpenAdId);
-      },
-      onAdRevenuePaidCallback: (ad) {},
-    ));
-    logs("APPOPEN --->");
-    AppLovinMAX.loadAppOpenAd(appOpenAdId);
-  }
-}
-
-Future<void> showInterstitialAd() async {
-  if (isShowAds &&
-      interstitialUnitId.isNotEmpty &&
-      showAdOnCount != 0 &&
-      adIntersTitiaCount == showAdOnCount) {
-    audioPlayer.stop();
-    bool isReady = (await AppLovinMAX.isInterstitialReady(interstitialUnitId))!;
-    if (isReady) {
-      AppLovinMAX.showInterstitial(interstitialUnitId);
-    }
-  }
-}
+AdModel adModel = AdModel();
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -122,7 +38,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-
+    AdService.googleInterstitialAd?.dispose();
     super.dispose();
   }
 
@@ -131,7 +47,9 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     logs("state ---> $state");
     switch (state) {
       case AppLifecycleState.resumed:
-        await showAdIfReady();
+        //AppOpenAdManager appOpenAdManager = AppOpenAdManager();
+        //appOpenAdManager.showAdIfAvailable();
+     //   await showAdIfReady();
         break;
 
       case AppLifecycleState.paused:
@@ -141,23 +59,23 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
-  Future<void> showAdIfReady() async {
-    if (isShowAds && appOpenAdId.isNotEmpty) {
-      if (isAppOpenAdInitialized) {
-        return;
-      }
-
-      bool isReady = (await AppLovinMAX.isAppOpenAdReady(appOpenAdId))!;
-      logs("isReady --> $isReady");
-      if (isReady) {
-        AppLovinMAX.showAppOpenAd(appOpenAdId);
-        audioPlayer.stop();
-      } else {
-        AppLovinMAX.loadAppOpenAd(appOpenAdId);
-        audioPlayer.play();
-      }
-    }
-  }
+  // Future<void> showAdIfReady() async {
+  //   if (isShowAds && appOpenAdId.isNotEmpty) {
+  //     if (isAppOpenAdInitialized) {
+  //       return;
+  //     }
+  //
+  //     bool isReady = (await AppLovinMAX.isAppOpenAdReady(appOpenAdId))!;
+  //     logs("isReady --> $isReady");
+  //     if (isReady) {
+  //       AppLovinMAX.showAppOpenAd(appOpenAdId);
+  //       audioPlayer.stop();
+  //     } else {
+  //       AppLovinMAX.loadAppOpenAd(appOpenAdId);
+  //       audioPlayer.play();
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -167,8 +85,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         WidgetsBinding.instance.addObserver(this);
         audioPlayer.positionStream.listen((event) async {
           if (event == audioPlayer.duration) {
-            adIntersTitiaCount++;
-            showInterstitialAd();
+            AdService.counterHandler();
           }
         });
         Future.delayed(
@@ -420,47 +337,52 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               builder: (BuildContext context, int indexValue, Widget? child) {
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 100),
-                  height: 60.px,
-                  child: SalomonBottomBar(
-                    currentIndex: indexValue,
-                    onTap: (index) => controller.onItemTapped(index),
-                    items: [
-                      SalomonBottomBarItem(
-                        icon: const Icon(Icons.music_note),
-                        title: AppText(
-                            title: AppStringConstant.songs,
-                            fontColor: Theme.of(context).colorScheme.secondary),
-                        selectedColor: Theme.of(context).colorScheme.secondary,
+                  height: 150.px,
+                  child: Column(
+                    children: [
+                      SalomonBottomBar(
+                        currentIndex: indexValue,
+                        onTap: (index) => controller.onItemTapped(index),
+                        items: [
+                          SalomonBottomBarItem(
+                            icon: const Icon(Icons.music_note),
+                            title: AppText(
+                                title: AppStringConstant.songs,
+                                fontColor: Theme.of(context).colorScheme.secondary),
+                            selectedColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                          SalomonBottomBarItem(
+                            icon: const Icon(Icons.album),
+                            title: AppText(
+                                title: AppStringConstant.album,
+                                fontColor: Theme.of(context).colorScheme.secondary),
+                            selectedColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                          SalomonBottomBarItem(
+                            icon: AppImageAsset(
+                              image: AssetConstant.icArtist,
+                              fit: BoxFit.cover,
+                              height: 20.px,
+                              width: 20.px,
+                              color: (indexValue == 2)
+                                  ? Theme.of(context).colorScheme.secondary
+                                  : ColorConstant.white,
+                            ),
+                            title: AppText(
+                                title: AppStringConstant.artist,
+                                fontColor: Theme.of(context).colorScheme.secondary),
+                            selectedColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                          SalomonBottomBarItem(
+                            icon: const Icon(Icons.my_library_music_rounded),
+                            title: AppText(
+                                title: AppStringConstant.playlist,
+                                fontColor: Theme.of(context).colorScheme.secondary),
+                            selectedColor: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ],
                       ),
-                      SalomonBottomBarItem(
-                        icon: const Icon(Icons.album),
-                        title: AppText(
-                            title: AppStringConstant.album,
-                            fontColor: Theme.of(context).colorScheme.secondary),
-                        selectedColor: Theme.of(context).colorScheme.secondary,
-                      ),
-                      SalomonBottomBarItem(
-                        icon: AppImageAsset(
-                          image: AssetConstant.icArtist,
-                          fit: BoxFit.cover,
-                          height: 20.px,
-                          width: 20.px,
-                          color: (indexValue == 2)
-                              ? Theme.of(context).colorScheme.secondary
-                              : ColorConstant.white,
-                        ),
-                        title: AppText(
-                            title: AppStringConstant.artist,
-                            fontColor: Theme.of(context).colorScheme.secondary),
-                        selectedColor: Theme.of(context).colorScheme.secondary,
-                      ),
-                      SalomonBottomBarItem(
-                        icon: const Icon(Icons.my_library_music_rounded),
-                        title: AppText(
-                            title: AppStringConstant.playlist,
-                            fontColor: Theme.of(context).colorScheme.secondary),
-                        selectedColor: Theme.of(context).colorScheme.secondary,
-                      ),
+                      AdService.loadNativeAd()
                     ],
                   ),
                 );
@@ -494,7 +416,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         logs('Banner ad revenue paid: ${ad.revenue}');
       },
     ));
-    initializeInterstitialAds();
+    //initializeInterstitialAds();
   }
 
   void loadBannerAds() {}

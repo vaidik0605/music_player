@@ -14,7 +14,7 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 
 class AddToPlayList{
   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
-  Future<void> addToPlayList(BuildContext context,int audioId) async{
+  Future<void> addToPlayList(BuildContext context,int audioId, SongModel songModel) async{
     List<PlaylistModel> playlistDetails = await offlineAudioQuery.getPlaylists();
     logs("playListDetails ----> $playlistDetails");
     // ignore: use_build_context_synchronously

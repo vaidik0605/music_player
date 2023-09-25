@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_player/components/app_loader.dart';
 import 'package:music_player/components/app_text.dart';
-import 'package:music_player/components/music_list_tile.dart';
+import 'package:music_player/components/search_list_tile.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/home_controller.dart';
@@ -106,7 +106,7 @@ class SearchPage extends StatelessWidget {
                                           Column(
                                             children: controller.searchedSongs
                                                 .map<Widget>((song) {
-                                              return AlbumTile(
+                                              return SearchListTile(
                                                 id: song.id,
                                                 title: song.title,
                                                 fileName: song.displayNameWOExt,
@@ -146,7 +146,7 @@ class SearchPage extends StatelessWidget {
                                             children: List.generate(
                                                 controller.searchedArtistKeyList
                                                     .length,
-                                                (index) => AlbumTile(
+                                                (index) => SearchListTile(
                                                       id: controller
                                                           .artistList[controller
                                                                   .searchedArtistKeyList[
@@ -202,7 +202,7 @@ class SearchPage extends StatelessWidget {
                                             children: List.generate(
                                                 controller.searchedAlbumKeyList
                                                     .length,
-                                                (index) => AlbumTile(
+                                                (index) => SearchListTile(
                                                       id: controller
                                                           .albumList[controller
                                                                   .searchedAlbumKeyList[

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:music_player/components/app_text.dart';
-import 'package:music_player/components/banner_ad_widget.dart';
-import 'package:music_player/components/music_list_tile.dart';
+import 'package:music_player/components/search_list_tile.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/home_controller.dart';
 import 'package:music_player/pages/home_page/home_page.dart';
 import 'package:music_player/routes/route_constant.dart';
+import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -56,13 +56,15 @@ class _AlbumPageState extends State<AlbumPage> {
       body: ListView.separated(
         itemCount: albumList.length,
         separatorBuilder: (context, index) {
-          if (bannerAdDividerCount != 0 && index % bannerAdDividerCount == 0) {
-            return const AppBannerAdView();
+          if (adModel.data != null &&
+              adModel.data!.bannerCount != 0 &&
+              index % adModel.data!.bannerCount == 0 && adModel.data!.scrollAd) {
+            return AdService.createGoogleBannerAd();
           }
           return const SizedBox();
         },
         itemBuilder: (context, index) {
-          return AlbumTile(
+          return SearchListTile(
             id: albumList[albumKeyList[index]]![0].id,
             title: albumKeyList[index],
             fileName: albumList[albumKeyList[index]]![0].displayNameWOExt,

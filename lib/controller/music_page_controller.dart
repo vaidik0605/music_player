@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:music_player/controller/home_controller.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -6,6 +7,7 @@ class MusicPageController extends GetxController {
   List<SongModel> songList = [];
   String tmpPath = '';
   Map<String, dynamic>? getArg;
+  NativeAd? nativeAd;
 
   Future<void> sortSongs(
     int sortVal,
@@ -61,6 +63,7 @@ class MusicPageController extends GetxController {
 
   @override
   void onInit() {
+    //tNativeAd();
     getArg = Get.arguments;
     HomeController homeController = Get.put(HomeController());
     if (getArg != null && getArg!.isNotEmpty) {
@@ -74,5 +77,14 @@ class MusicPageController extends GetxController {
     tmpPath = homeController.tmpPath!;
     update();
     super.onInit();
+  }
+
+  Future<void> getNativeAd() async {
+   // nativeAd = AdService.loadNativeAd();
+    if (nativeAd != null) {
+      await nativeAd!.load();
+      update();
+    }
+    update();
   }
 }

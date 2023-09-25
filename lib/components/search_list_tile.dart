@@ -4,7 +4,7 @@ import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/helper/audio_query_helper.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
-class AlbumTile extends StatelessWidget {
+class SearchListTile extends StatelessWidget {
   final String title;
   final String subTitle;
   final int id;
@@ -12,7 +12,7 @@ class AlbumTile extends StatelessWidget {
   final String tempPath;
   final String fileName;
   final Function() onTap;
-  const AlbumTile(
+  const SearchListTile(
       {super.key,
       required this.id,
       required this.title,

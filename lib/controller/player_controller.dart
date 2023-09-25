@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/controller/home_controller.dart';
 import 'package:music_player/helper/media_item_converter.dart';
-import 'package:music_player/pages/home_page/home_page.dart';
+import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
@@ -77,14 +77,12 @@ class AudioPlayerController extends GetxController {
 
   void playNext() {
     audioPlayer.seekToNext();
-    adIntersTitiaCount++;
-    showInterstitialAd();
+    AdService.counterHandler();
   }
 
   void playPrevious() {
     audioPlayer.seekToPrevious();
-    adIntersTitiaCount++;
-    showInterstitialAd();
+    AdService.counterHandler();
   }
 
   void setVolume(double volume) {

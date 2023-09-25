@@ -19,6 +19,7 @@ import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/player_controller.dart';
 import 'package:music_player/helper/media_item_converter.dart';
 import 'package:music_player/routes/route_constant.dart';
+import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:rxdart/rxdart.dart' as rx_dart;
@@ -908,6 +909,7 @@ class AudioList extends StatelessWidget {
                     child: ListTile(
                       selected: index == sequenceState.currentIndex,
                       onTap: () {
+                        AdService.counterHandler();
                         audioPlayer.seek(Duration.zero,index: index);
                         _updateScrollController( scrollController,
                           sequenceState.currentIndex,

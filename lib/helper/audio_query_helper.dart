@@ -8,15 +8,23 @@ import 'package:music_player/constants/asset_constant.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class OfflineAudioQuery {
   static OnAudioQuery audioQuery = OnAudioQuery();
-  static final RegExp avoid = RegExp(r'[\.\\\*\:\"\?#/;\|]');
 
-  Future<void> requestPermission() async {
-    while (!await audioQuery.permissionsStatus()) {
-      await audioQuery.permissionsRequest();
+  Future<bool> requestPermission() async {
+    var status = await Permission.storage.request();
+    if (status.isGranted) {
+      return true;
+    } else if (status.isDenied) {
+      bool status = await requestPermission();
+      return status;
     }
+    return false;
+    // while (!await audioQuery.permissionsStatus()) {
+    //   await audioQuery.permissionsRequest();
+    // }
   }
 
   Future<List<SongModel>> getSongs({
@@ -37,7 +45,6 @@ class OfflineAudioQuery {
   }
 
   Future<bool> createPlaylist({required String name}) async {
-    name.replaceAll(avoid, '').replaceAll('  ', ' ');
     return audioQuery.createPlaylist(name);
   }
 

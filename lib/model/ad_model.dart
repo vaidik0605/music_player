@@ -33,41 +33,65 @@ class AdModel {
 }
 
 class Data {
+  String? gAppOpen;
+  String? gBanner;
+  String? gInt;
+  String? gNative;
   String? maxInt;
   String? maxBanner;
   String? maxNative;
   String? appOpen;
   bool adsStatus;
-  int? intCount;
-  int? bannerCount;
+  bool isGoogle;
+  bool scrollAd;
+  int intCount;
+  int bannerCount;
 
   Data({
+    this.gAppOpen,
+    this.gBanner,
+    this.gInt,
+    this.gNative,
     this.maxInt,
     this.maxBanner,
     this.maxNative,
-    this.adsStatus = false,
-    this.intCount,
     this.appOpen,
-    this.bannerCount,
+    this.adsStatus = false,
+    this.scrollAd = false,
+    this.isGoogle = false,
+    this.intCount = 0,
+    this.bannerCount = 0,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
+    gAppOpen: json["g_app_open"],
+    gBanner: json["g_banner"],
+    gInt: json["g_int"],
+    gNative: json["g_native"],
     maxInt: json["max_int"],
     maxBanner: json["max_banner"],
     maxNative: json["max_native"],
+    appOpen: json["app_open"],
     adsStatus: json["ads_status"],
+    isGoogle: json["is_google"],
     intCount: json["int_count"],
     bannerCount: json["banner_count"],
-    appOpen: json["app_open"]
+    scrollAd: json["scroll_ad"],
   );
 
   Map<String, dynamic> toJson() => {
+    "g_app_open": gAppOpen,
+    "g_banner": gBanner,
+    "g_int": gInt,
+    "g_native": gNative,
     "max_int": maxInt,
     "max_banner": maxBanner,
     "max_native": maxNative,
+    "app_open": appOpen,
     "ads_status": adsStatus,
+    "is_google": isGoogle,
     "int_count": intCount,
     "banner_count": bannerCount,
-    "app_open":appOpen
+    "scroll_ad": scrollAd,
   };
 }

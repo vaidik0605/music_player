@@ -51,4 +51,6 @@ class AppStringConstant {
   static const String deleted = 'Deleted';
   static const String removeFrom = 'Remove From';
   static const String severError = 'Sever Error';
+  static const String noPlaylistFound = 'No Playlist Found';
+  static const String noSongsFound = 'No Songs found';
 }
