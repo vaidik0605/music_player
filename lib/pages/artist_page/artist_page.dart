@@ -7,10 +7,10 @@ import 'package:music_player/components/search_list_tile.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/home_controller.dart';
+import 'package:music_player/model/my_song_model.dart';
 import 'package:music_player/pages/home_page/home_page.dart';
 import 'package:music_player/routes/route_constant.dart';
 import 'package:music_player/service/ad_service.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 
 class ArtistPage extends StatefulWidget {
   const ArtistPage({super.key});
@@ -21,7 +21,7 @@ class ArtistPage extends StatefulWidget {
 
 class _ArtistPageState extends State<ArtistPage> {
   List<String> artistKeyList = [];
-  Map<String, List<SongModel>> artistList = {};
+  Map<String, List<MySongModel>> artistList = {};
   String tmpPath = '';
   bool isDrawer = false;
 
@@ -65,9 +65,9 @@ class _ArtistPageState extends State<ArtistPage> {
         itemCount: artistList.length,
         itemBuilder: (context, index) {
           return SearchListTile(
-            id: artistList[artistKeyList[index]]![0].id,
+            id: artistList[artistKeyList[index]]![0].id!,
             title: artistKeyList[index],
-            fileName: artistList[artistKeyList[index]]![0].displayNameWOExt,
+            fileName: artistList[artistKeyList[index]]![0].displayNameWOExt!,
             subTitle:
                 '${artistList[artistKeyList[index]]!.length} ${AppStringConstant.songs}',
             tempPath: tmpPath,

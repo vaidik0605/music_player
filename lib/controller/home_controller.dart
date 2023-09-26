@@ -6,6 +6,7 @@ import 'package:music_player/helper/audio_query_helper.dart';
 import 'package:music_player/helper/media_item_converter.dart';
 import 'package:music_player/main.dart';
 import 'package:music_player/model/ad_model.dart';
+import 'package:music_player/model/my_song_model.dart';
 import 'package:music_player/pages/home_page/home_page.dart';
 import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/service/rest_service.dart';
@@ -29,16 +30,16 @@ class HomeController extends GetxController {
     );
   }
 
-  List<SongModel> songs = [];
+  List<MySongModel> songs = [];
   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
   String? tmpPath;
-  final Map<String, List<SongModel>> albums = {};
+  final Map<String, List<MySongModel>> albums = {};
   final List<String> albumsKeyList = [];
   List<MediaItem> shuffleList = [];
   final List<String> artisKeyList = [];
   final List<String> genresKeyList = [];
-  final Map<String, List<SongModel>> artists = {};
-  final Map<String, List<SongModel>> genres = {};
+  final Map<String, List<MySongModel>> artists = {};
+  final Map<String, List<MySongModel>> genres = {};
   bool isLoading = false;
   final Map<int, SongSortType> songSortTypes = {
     0: SongSortType.DISPLAY_NAME,
@@ -60,11 +61,15 @@ class HomeController extends GetxController {
     if (status) {
       tmpPath ??= (await getTemporaryDirectory()).path;
       logs("tmpPath ---> $tmpPath");
-      songs = (await offlineAudioQuery.getSongs(
+      List<SongModel> tmpSong = (await offlineAudioQuery.getSongs(
         sortType: songSortTypes[1],
         orderType: songOrderTypes[1],
       ))
           .toList();
+      for (var element in tmpSong) {
+        MySongModel songModel = MySongModel.fromJson(element.getMap);
+        songs.add(songModel);
+      }
 
       for (int i = 0; i < songs.length; i++) {
         try {

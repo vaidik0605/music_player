@@ -441,7 +441,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   Get.put(AudioPlayerController());
               controller.initializeValue(
                   tmpPath: homeController.tmpPath!,
-                  songList: homeController.songs,
+                  mySongList: homeController.songs,
                   index: 0,
                   isShuffleEnable: true);
             },
@@ -458,7 +458,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
               controller.initializeValue(
                   tmpPath: homeController.tmpPath!,
-                  songList: musicPlayerController.songList,
+                  mySongList: musicPlayerController.songList,
                   index: 0,
                   isShuffleEnable: false);
             },

@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:music_player/controller/home_controller.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:music_player/model/my_song_model.dart';
 
 class MusicPageController extends GetxController {
-  List<SongModel> songList = [];
+  List<MySongModel> songList = [];
   String tmpPath = '';
   Map<String, dynamic>? getArg;
   NativeAd? nativeAd;
@@ -16,7 +16,7 @@ class MusicPageController extends GetxController {
     switch (sortVal) {
       case 0:
         songList.sort(
-          (a, b) => a.displayName.compareTo(b.displayName),
+          (a, b) => a.displayName!.compareTo(b.displayName!),
         );
         break;
       case 1:

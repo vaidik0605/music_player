@@ -18,9 +18,8 @@
  */
 
 import 'package:audio_service/audio_service.dart';
-import 'package:on_audio_query/on_audio_query.dart';
+import 'package:music_player/model/my_song_model.dart';
 
-// ignore: avoid_classes_with_only_static_members
 class MediaItemConverter {
   static Map mediaItemToMap(MediaItem mediaItem) {
     return {
@@ -118,11 +117,12 @@ class MediaItemConverter {
     );
   }
 
-  static MediaItem songModelToMediaItem(SongModel songModel,String tempDirPath){
-    String playTitle = songModel.title;
+  static MediaItem songModelToMediaItem(
+      MySongModel songModel, String tempDirPath) {
+    String playTitle = songModel.title!;
     playTitle == ''
-        ? playTitle = songModel.displayNameWOExt
-        : playTitle = songModel.title;
+        ? playTitle = songModel.displayNameWOExt!
+        : playTitle = songModel.title!;
     String playArtist = songModel.artist!;
     playArtist == '<unknown>'
         ? playArtist = 'Unknown'
@@ -145,7 +145,7 @@ class MediaItemConverter {
         'date_added': songModel.dateAdded,
         'date_modified': songModel.dateModified,
         'size': songModel.size,
-        'year': songModel.getMap['year'],
+        'year': songModel.year,
       },
     );
     return tempDict;

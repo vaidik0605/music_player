@@ -32,88 +32,81 @@ class MusicPage extends StatelessWidget {
                     preferredSize: Size.zero, child: SizedBox()),
             body: (controller.songList.isNotEmpty)
                 ? ListView.separated(
-                  separatorBuilder: (context, index) {
-                    if (adModel.data != null &&
-                        adModel.data!.bannerCount != 0 &&
-                        index % adModel.data!.bannerCount == 0 &&
-                        !adModel.data!.scrollAd) {
-                      return AdService.createGoogleBannerAd();
-                    }
-                    return const SizedBox();
-                  },
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 10),
-                  shrinkWrap: true,
-                  itemCount: controller.songList.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: OfflineAudioQuery.offlineArtworkWidget(
-                        id: controller.songList[index].id,
-                        type: ArtworkType.AUDIO,
-                        tempPath: controller.tmpPath,
-                        fileName:
-                            controller.songList[index].displayNameWOExt,
-                      ),
-                      title: AppText(
-                        title:
-                            controller.songList[index].title.trim() !=
-                                    ''
-                                ? controller.songList[index].title
-                                : controller
-                                    .songList[index].displayNameWOExt,
-                        textOverflow: TextOverflow.ellipsis,
-                      ),
-                      subtitle: AppText(
-                        title:
-                            '${controller.songList[index].artist?.replaceAll('<unknown>', 'Unknown') ?? AppStringConstant.unknown} - ${controller.songList[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
-                        textOverflow: TextOverflow.ellipsis,
-                      ),
-                      trailing: PopupMenuButton(
-                        icon: const Icon(
-                          Icons.more_vert_rounded,
-                          color: ColorConstant.white,
+                    separatorBuilder: (context, index) {
+                      if (adModel.data != null &&
+                          adModel.data!.bannerCount != 0 &&
+                          index % adModel.data!.bannerCount == 0 &&
+                          adModel.data!.scrollAd) {
+                        return AdService.createGoogleBannerAd();
+                      }
+                      return const SizedBox();
+                    },
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.only(bottom: 10),
+                    shrinkWrap: true,
+                    itemCount: controller.songList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: OfflineAudioQuery.offlineArtworkWidget(
+                          id: controller.songList[index].id!,
+                          type: ArtworkType.AUDIO,
+                          tempPath: controller.tmpPath,
+                          fileName:
+                              controller.songList[index].displayNameWOExt!,
                         ),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(15.0)),
+                        title: AppText(
+                          title: controller.songList[index].title!.trim() != ''
+                              ? controller.songList[index].title!
+                              : controller.songList[index].displayNameWOExt!,
+                          textOverflow: TextOverflow.ellipsis,
                         ),
-                        onSelected: (int? value) async {
-                          if (value == 0) {
-                            AddToPlayList().addToPlayList(
-                              context,
-                              controller.songList[index].id,
-                              controller.songList[index]
-                            );
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 0,
-                            child: Row(
-                              children: [
-                                const Icon(Icons.playlist_add_rounded,
-                                    color: ColorConstant.white),
-                                SizedBox(width: 10.0.px),
-                                const AppText(
-                                    title: AppStringConstant
-                                        .addToPlaylist),
-                              ],
-                            ),
+                        subtitle: AppText(
+                          title:
+                              '${controller.songList[index].artist?.replaceAll('<unknown>', 'Unknown') ?? AppStringConstant.unknown} - ${controller.songList[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
+                          textOverflow: TextOverflow.ellipsis,
+                        ),
+                        trailing: PopupMenuButton(
+                          icon: const Icon(
+                            Icons.more_vert_rounded,
+                            color: ColorConstant.white,
                           ),
-                        ],
-                      ),
-                      onTap: () async {
-                        AdService.counterHandler();
-                        final audioPlayerController =
-                            Get.put(AudioPlayerController());
-                        audioPlayerController.initializeValue(
-                            tmpPath: controller.tmpPath,
-                            songList: controller.songList,
-                            index: index);
-                      },
-                    );
-                  },
-                )
+                          shape: const RoundedRectangleBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(15.0)),
+                          ),
+                          onSelected: (int? value) async {
+                            if (value == 0) {
+                              AddToPlayList().addToPlayList(
+                                  context, controller.songList[index],controller.tmpPath);
+                            }
+                          },
+                          itemBuilder: (context) => [
+                            PopupMenuItem(
+                              value: 0,
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.playlist_add_rounded,
+                                      color: ColorConstant.white),
+                                  SizedBox(width: 10.0.px),
+                                  const AppText(
+                                      title: AppStringConstant.addToPlaylist),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                        onTap: () async {
+                          AdService.counterHandler();
+                          final audioPlayerController =
+                              Get.put(AudioPlayerController());
+                          audioPlayerController.initializeValue(
+                              tmpPath: controller.tmpPath,
+                              mySongList: controller.songList,
+                              index: index);
+                        },
+                      );
+                    },
+                  )
                 : const Center(
                     child: AppText(title: AppStringConstant.noSongFound),
                   ));

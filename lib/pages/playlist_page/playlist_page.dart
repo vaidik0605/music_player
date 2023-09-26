@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:music_player/components/app_image_assets.dart';
 import 'package:music_player/components/app_loader.dart';
 import 'package:music_player/components/app_text.dart';
 import 'package:music_player/components/app_toast.dart';
-import 'package:music_player/constants/asset_constant.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/constants/string_constant.dart';
 import 'package:music_player/controller/playlist_controller.dart';
+import 'package:music_player/helper/audio_query_helper.dart';
+import 'package:music_player/model/my_play_list_model.dart';
 import 'package:music_player/pages/home_page/home_page.dart';
 import 'package:music_player/routes/route_constant.dart';
 import 'package:music_player/service/ad_service.dart';
@@ -31,6 +31,7 @@ class PlaylistPage extends StatelessWidget {
             if (args != null) {
               controller.isDrawer = args['isDrawer'];
             }
+            controller.update();
           },
         );
       },
@@ -78,8 +79,12 @@ class PlaylistPage extends StatelessWidget {
                         onSubmitted: (String value) async {
                           if (value.trim() != '') {
                             Get.back();
-                            await controller.offlineAudioQuery
-                                .createPlaylist(name: value);
+                            MyPlaylistModel playlistModel = MyPlaylistModel(
+                                playlistName: value,
+                                playlistId:
+                                    '$value-${DateTime.now().microsecondsSinceEpoch}');
+                            await controller.dbHelper
+                                .createPlayList(playlistModel: playlistModel);
                             controller.update();
                           }
                         },
@@ -99,9 +104,9 @@ class PlaylistPage extends StatelessWidget {
 
   Widget playlistView(PlaylistController controller) {
     return Expanded(
-      child: FutureBuilder<List<PlaylistModel>>(
-        future: controller.offlineAudioQuery.getPlaylists(),
-        builder: (context, AsyncSnapshot<List<PlaylistModel>> snapshot) {
+      child: FutureBuilder<List<MyPlaylistModel>>(
+        future: controller.dbHelper.getPlayList(),
+        builder: (context, AsyncSnapshot<List<MyPlaylistModel>> snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData &&
                 snapshot.data != null &&
@@ -121,38 +126,24 @@ class PlaylistPage extends StatelessWidget {
                   return ListTile(
                     onTap: () async {
                       Get.toNamed(RouteConstant.playlistSongRoute, arguments: {
-                        'title': snapshot.data![index].playlist,
-                        'playListId': snapshot.data![index].id,
+                        'title': snapshot.data![index].playlistName!,
+                        'playListId': snapshot.data![index].playlistId!,
                       });
                     },
-                    leading: Card(
-                      elevation: 5,
-                      color: ColorConstant.black,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0.px),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: QueryArtworkWidget(
-                        id: snapshot.data![index].id,
-                        type: ArtworkType.PLAYLIST,
-                        keepOldArtwork: true,
-                        artworkBorder: BorderRadius.circular(7.0.px),
-                        nullArtworkWidget: ClipRRect(
-                          borderRadius: BorderRadius.circular(7.0.px),
-                          child: AppImageAsset(
-                            fit: BoxFit.cover,
-                            height: 50.0.px,
-                            width: 50.0.px,
-                            image: AssetConstant.coverImage,
-                          ),
-                        ),
-                      ),
-                    ),
+                    leading: OfflineAudioQuery.offlineArtworkWidget(
+                        id: snapshot.data![index].songs.isNotEmpty
+                            ? snapshot.data![index].songs.first.id!
+                            : 0,
+                        type: ArtworkType.AUDIO,
+                        tempPath: (snapshot.data![index].tmpPath.isNotEmpty) ? snapshot.data![index].tmpPath :'',
+                        fileName: snapshot.data![index].songs.isNotEmpty
+                            ? snapshot.data!.first.songs.first.displayNameWOExt!
+                            : ''),
                     title: AppText(
-                      title: snapshot.data![index].playlist,
+                      title: snapshot.data![index].playlistName!,
                     ),
                     subtitle: AppText(
-                      title: '${snapshot.data![index].numOfSongs} Songs',
+                      title: '${snapshot.data![index].songs.length} Songs',
                     ),
                     trailing: PopupMenuButton(
                       icon: const Icon(Icons.more_vert_rounded,
@@ -164,13 +155,12 @@ class PlaylistPage extends StatelessWidget {
                       ),
                       onSelected: (value) async {
                         if (value == 0) {
-                          bool isSuccess = await controller.offlineAudioQuery.removePlaylist(
-                              playlistId: snapshot.data![index].id);
-                          if (isSuccess) {
-                            '${AppStringConstant.deleted} ${snapshot.data![index].playlist}'
-                                .showToast();
-                            controller.update();
-                          }
+                          await controller.dbHelper.deletePlayList(
+                              playListId: snapshot.data![index].playlistId!);
+
+                          '${AppStringConstant.deleted} ${snapshot.data![index].playlistName}'
+                              .showToast();
+                          controller.update();
                         }
                       },
                       itemBuilder: (context) {

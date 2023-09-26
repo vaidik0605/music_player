@@ -7,9 +7,9 @@ import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player/controller/home_controller.dart';
 import 'package:music_player/helper/media_item_converter.dart';
+import 'package:music_player/model/my_song_model.dart';
 import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/utils/all_logs.dart';
-import 'package:on_audio_query/on_audio_query.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 AudioPlayer audioPlayer = AudioPlayer();
@@ -20,25 +20,26 @@ class AudioPlayerController extends GetxController {
   List<MediaItem> mediaItemList = [];
   PanelController panelController = PanelController();
   TextEditingController noOfSongController = TextEditingController();
-  ConcatenatingAudioSource audioSource =ConcatenatingAudioSource(children: []);
+  ConcatenatingAudioSource audioSource = ConcatenatingAudioSource(children: []);
   Duration pickSleepTime = const Duration(seconds: 0);
   Timer? durationTimer;
   Timer? countTimer;
   HomeController homeController = Get.put(HomeController());
 
-  Future<void> initializeValue(
-      {required int index,
-      bool isShuffleEnable = false,
-      required List<SongModel> songList,
-      required String tmpPath}) async {
-    if (songList.isNotEmpty) {
+  Future<void> initializeValue({
+    required int index,
+    bool isShuffleEnable = false,
+    required List<MySongModel> mySongList,
+    required String tmpPath,
+  }) async {
+    if (mySongList.isNotEmpty) {
       mediaItemList.clear();
-      for (var element in songList) {
+      for (var element in mySongList) {
         mediaItemList
             .add(MediaItemConverter.songModelToMediaItem(element, tmpPath));
       }
     }
-     audioSource = ConcatenatingAudioSource(
+    audioSource = ConcatenatingAudioSource(
       children: List.generate(
         mediaItemList.length,
         (index) => AudioSource.uri(
@@ -64,7 +65,7 @@ class AudioPlayerController extends GetxController {
     audioPlayer.play();
   }
 
-  void changePlaySequence(int oldIndex,int newIndex){
+  void changePlaySequence(int oldIndex, int newIndex) {
     MediaItem mediaItem = mediaItemList.removeAt(oldIndex);
     mediaItemList.insert(newIndex, mediaItem);
     audioSource.move(oldIndex, newIndex);
@@ -136,6 +137,5 @@ class AudioPlayerController extends GetxController {
         startInt++;
       }
     });
-    //int startCount = 0;
   }
 }

@@ -107,9 +107,9 @@ class SearchPage extends StatelessWidget {
                                             children: controller.searchedSongs
                                                 .map<Widget>((song) {
                                               return SearchListTile(
-                                                id: song.id,
-                                                title: song.title,
-                                                fileName: song.displayNameWOExt,
+                                                id: song.id!,
+                                                title: song.title!,
+                                                fileName: song.displayNameWOExt!,
                                                 subTitle:
                                                     song.artist ?? 'unKnown',
                                                 tempPath: controller.tmpPath,
@@ -151,7 +151,7 @@ class SearchPage extends StatelessWidget {
                                                           .artistList[controller
                                                                   .searchedArtistKeyList[
                                                               index]]![0]
-                                                          .id,
+                                                          .id!,
                                                       title: controller
                                                               .searchedArtistKeyList[
                                                           index],
@@ -159,7 +159,7 @@ class SearchPage extends StatelessWidget {
                                                           .artistList[controller
                                                                   .searchedArtistKeyList[
                                                               index]]![0]
-                                                          .displayNameWOExt,
+                                                          .displayNameWOExt!,
                                                       subTitle:
                                                           '${controller.artistList[controller.searchedArtistKeyList[index]]!.length} ${AppStringConstant.songs}',
                                                       tempPath:
@@ -207,7 +207,7 @@ class SearchPage extends StatelessWidget {
                                                           .albumList[controller
                                                                   .searchedAlbumKeyList[
                                                               index]]![0]
-                                                          .id,
+                                                          .id!,
                                                       title: controller
                                                               .searchedAlbumKeyList[
                                                           index],
@@ -215,7 +215,7 @@ class SearchPage extends StatelessWidget {
                                                           .albumList[controller
                                                                   .searchedAlbumKeyList[
                                                               index]]![0]
-                                                          .displayNameWOExt,
+                                                          .displayNameWOExt!,
                                                       subTitle:
                                                           '${controller.albumList[controller.searchedAlbumKeyList[index]]!.length} ${AppStringConstant.songs}',
                                                       tempPath:
