@@ -30,7 +30,7 @@ class _ArtistPageState extends State<ArtistPage> {
     HomeController homeController = Get.put(HomeController());
     artistKeyList = homeController.artisKeyList;
     artistList = homeController.artists;
-    tmpPath = homeController.tmpPath!;
+    tmpPath = homeController.tmpPath ?? '';
     var args = Get.arguments;
     if (args != null) {
       isDrawer = args['isDrawer'];
@@ -53,31 +53,36 @@ class _ArtistPageState extends State<ArtistPage> {
           fontColor: ColorConstant.white,
         ),
       ),
-      body: ListView.separated(
-        separatorBuilder: (context, index) {
-          if (adModel.data != null &&
-              adModel.data!.bannerCount != 0 &&
-              index % adModel.data!.bannerCount == 0 && adModel.data!.scrollAd) {
-            return AdService.createGoogleBannerAd();
-          }
-          return const SizedBox();
-        },
-        itemCount: artistList.length,
-        itemBuilder: (context, index) {
-          return SearchListTile(
-            id: artistList[artistKeyList[index]]![0].id!,
-            title: artistKeyList[index],
-            fileName: artistList[artistKeyList[index]]![0].displayNameWOExt!,
-            subTitle:
-                '${artistList[artistKeyList[index]]!.length} ${AppStringConstant.songs}',
-            tempPath: tmpPath,
-            onTap: () => Get.toNamed(RouteConstant.musicRoute, arguments: {
-              'songList': artistList[artistKeyList[index]],
-              'title': artistKeyList[index]
-            }),
-          );
-        },
-      ),
+      body: (artistKeyList.isEmpty && artistList.isEmpty)
+          ? const Center(child: AppText(title: AppStringConstant.noArtistFound))
+          : ListView.separated(
+              separatorBuilder: (context, index) {
+                if (adModel.data != null &&
+                    adModel.data!.bannerCount != 0 &&
+                    index % adModel.data!.bannerCount == 0 &&
+                    adModel.data!.scrollAd) {
+                  return AdService.createGoogleBannerAd();
+                }
+                return const SizedBox();
+              },
+              itemCount: artistList.length,
+              itemBuilder: (context, index) {
+                return SearchListTile(
+                  id: artistList[artistKeyList[index]]![0].id!,
+                  title: artistKeyList[index],
+                  fileName:
+                      artistList[artistKeyList[index]]![0].displayNameWOExt!,
+                  subTitle:
+                      '${artistList[artistKeyList[index]]!.length} ${AppStringConstant.songs}',
+                  tempPath: tmpPath,
+                  onTap: () => Get.toNamed(RouteConstant.musicRoute,
+                      arguments: {
+                        'songList': artistList[artistKeyList[index]],
+                        'title': artistKeyList[index]
+                      }),
+                );
+              },
+            ),
     );
   }
 }

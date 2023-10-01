@@ -29,7 +29,7 @@ class _AlbumPageState extends State<AlbumPage> {
     HomeController homeController = Get.put(HomeController());
     albumKeyList = homeController.albumsKeyList;
     albumList = homeController.albums;
-    tmpPath = homeController.tmpPath!;
+    tmpPath = homeController.tmpPath ?? '';
     var args = Get.arguments;
     if (args != null) {
       isDrawer = args['isDrawer'];
@@ -53,8 +53,12 @@ class _AlbumPageState extends State<AlbumPage> {
           fontColor: ColorConstant.white,
         ),
       ),
-      body: ListView.separated(
-        itemCount: albumList.length,
+      body: (albumList.isEmpty && albumKeyList.isEmpty)
+          ? const Center(
+              child: AppText(title: AppStringConstant.noAlbumFound),
+            )
+          : ListView.separated(
+              itemCount: albumList.length,
         separatorBuilder: (context, index) {
           if (adModel.data != null &&
               adModel.data!.bannerCount != 0 &&

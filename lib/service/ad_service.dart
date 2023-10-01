@@ -14,7 +14,7 @@ class AdService {
   static InterstitialAd? googleInterstitialAd;
   static int numInterstitialLoadAttempts = 0;
 
-  static SizedBox createGoogleBannerAd() {
+  static SizedBox createGoogleBannerAd({double? height}) {
     BannerAd bannerAd = BannerAd(
         size: AdSize.banner,
         adUnitId: adModel.data!.gBanner ?? '',
@@ -31,7 +31,7 @@ class AdService {
         request: const AdRequest());
     bannerAd.load();
      return SizedBox(
-      height: bannerAd.size.height.toDouble(),
+      height: height ?? bannerAd.size.height.toDouble(),
       width: bannerAd.size.width.toDouble(),
       child: AdWidget(ad: bannerAd),
     );

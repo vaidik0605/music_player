@@ -113,6 +113,7 @@ class HomeController extends GetxController {
   Future<void> loadAds() async {
     isLoading = true;
     update();
+    await getData();
     Map<String, dynamic>? map = await RestService.getRestMethod();
     if (map != null && map.isNotEmpty) {
       adModel = AdModel(data: null, success: false, message: null);
@@ -125,7 +126,6 @@ class HomeController extends GetxController {
         if (sdkConfiguration != null) {}
       }
     }
-    await getData();
     isLoading = false;
     update();
   }

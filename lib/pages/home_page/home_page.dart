@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:applovin_max/applovin_max.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,13 +16,13 @@ import 'package:music_player/model/ad_model.dart';
 import 'package:music_player/pages/artist_page/artist_page.dart';
 import 'package:music_player/pages/music_page/music_page.dart';
 import 'package:music_player/pages/album_page/album_page.dart';
-import 'package:music_player/pages/playlist_page/playlist_page.dart';
 import 'package:music_player/routes/route_constant.dart';
 import 'package:music_player/service/ad_service.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 
+import '../playlist_page/playlist_page.dart';
 
 AdModel adModel = AdModel();
 
@@ -49,7 +48,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       case AppLifecycleState.resumed:
         //AppOpenAdManager appOpenAdManager = AppOpenAdManager();
         //appOpenAdManager.showAdIfAvailable();
-     //   await showAdIfReady();
+        //   await showAdIfReady();
         break;
 
       case AppLifecycleState.paused:
@@ -178,7 +177,13 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                                                           controller.name.value,
                                                       fontSize: 20.px,
                                                       fontWeight:
-                                                          FontWeight.w500))
+                                                          FontWeight.w500)),
+                                                  Padding(
+                                                      padding: EdgeInsets.only(
+                                                          bottom: 20.px,
+                                                          left: 5.px),
+                                                      child: Icon(Icons.edit,
+                                                          size: 10.px)),
                                                 ],
                                               ),
                                             ),
@@ -321,8 +326,18 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                         ),
                       ],
                     ),
-                    const AlbumPage(),
-                    const ArtistPage(),
+                    (controller.albumsKeyList.isEmpty &&
+                            controller.albums.isEmpty)
+                        ? const Center(
+                            child:
+                                AppText(title: AppStringConstant.noAlbumFound))
+                        : const AlbumPage(),
+                    (controller.artisKeyList.isEmpty &&
+                            controller.artists.isEmpty)
+                        ? const Center(
+                            child:
+                                AppText(title: AppStringConstant.noArtistFound))
+                        : const ArtistPage(),
                     const PlaylistPage(),
                   ],
                 ),
@@ -348,15 +363,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             icon: const Icon(Icons.music_note),
                             title: AppText(
                                 title: AppStringConstant.songs,
-                                fontColor: Theme.of(context).colorScheme.secondary),
-                            selectedColor: Theme.of(context).colorScheme.secondary,
+                                fontColor:
+                                    Theme.of(context).colorScheme.secondary),
+                            selectedColor:
+                                Theme.of(context).colorScheme.secondary,
                           ),
                           SalomonBottomBarItem(
                             icon: const Icon(Icons.album),
                             title: AppText(
                                 title: AppStringConstant.album,
-                                fontColor: Theme.of(context).colorScheme.secondary),
-                            selectedColor: Theme.of(context).colorScheme.secondary,
+                                fontColor:
+                                    Theme.of(context).colorScheme.secondary),
+                            selectedColor:
+                                Theme.of(context).colorScheme.secondary,
                           ),
                           SalomonBottomBarItem(
                             icon: AppImageAsset(
@@ -370,19 +389,26 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                             ),
                             title: AppText(
                                 title: AppStringConstant.artist,
-                                fontColor: Theme.of(context).colorScheme.secondary),
-                            selectedColor: Theme.of(context).colorScheme.secondary,
+                                fontColor:
+                                    Theme.of(context).colorScheme.secondary),
+                            selectedColor:
+                                Theme.of(context).colorScheme.secondary,
                           ),
                           SalomonBottomBarItem(
                             icon: const Icon(Icons.my_library_music_rounded),
                             title: AppText(
                                 title: AppStringConstant.playlist,
-                                fontColor: Theme.of(context).colorScheme.secondary),
-                            selectedColor: Theme.of(context).colorScheme.secondary,
+                                fontColor:
+                                    Theme.of(context).colorScheme.secondary),
+                            selectedColor:
+                                Theme.of(context).colorScheme.secondary,
                           ),
                         ],
                       ),
-                      AdService.loadNativeAd()
+                      if (adModel.data != null &&
+                          adModel.data!.gBanner != null &&
+                          adModel.data!.gBanner!.isNotEmpty)
+                        AdService.createGoogleBannerAd(height: 80.px),
                     ],
                   ),
                 );
@@ -393,33 +419,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
       },
     );
   }
-
-  void loadAds() {
-    AppLovinMAX.setBannerListener(AdViewAdListener(
-      onAdLoadedCallback: (ad) {
-        logs('Banner ad loaded from ${ad.networkName}');
-      },
-      onAdLoadFailedCallback: (adUnitId, error) {
-        logs(
-            'Banner ad failed to load with error code ${error.code} and message: ${error.message}');
-      },
-      onAdClickedCallback: (ad) {
-        logs('Banner ad clicked');
-      },
-      onAdExpandedCallback: (ad) {
-        logs('Banner ad expanded');
-      },
-      onAdCollapsedCallback: (ad) {
-        logs('Banner ad collapsed');
-      },
-      onAdRevenuePaidCallback: (ad) {
-        logs('Banner ad revenue paid: ${ad.revenue}');
-      },
-    ));
-    //initializeInterstitialAds();
-  }
-
-  void loadBannerAds() {}
 
   Widget shuffleView(HomeController homeController) {
     return Container(

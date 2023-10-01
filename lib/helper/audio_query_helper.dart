@@ -8,23 +8,16 @@ import 'package:music_player/constants/asset_constant.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class OfflineAudioQuery {
   static OnAudioQuery audioQuery = OnAudioQuery();
 
   Future<bool> requestPermission() async {
-    var status = await Permission.storage.request();
-    if (status.isGranted) {
-      return true;
-    } else if (status.isDenied) {
-      bool status = await requestPermission();
-      return status;
+    bool status = false;
+    if(!await audioQuery.permissionsStatus()){
+      status = await audioQuery.permissionsRequest();
     }
-    return false;
-    // while (!await audioQuery.permissionsStatus()) {
-    //   await audioQuery.permissionsRequest();
-    // }
+    return status;
   }
 
   Future<List<SongModel>> getSongs({

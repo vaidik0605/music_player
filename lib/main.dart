@@ -18,7 +18,7 @@ const String sdkKey =
 Future<void> main() async {
   await JustAudioBackground.init(
     androidNotificationChannelId: 'com.ryanheise.bg_demo.channel.audio',
-    androidNotificationChannelName: 'Music Player',
+    androidNotificationChannelName: 'Music',
     androidNotificationOngoing: true,
     androidShowNotificationBadge: true,
     notificationColor: ColorConstant.grey900,
