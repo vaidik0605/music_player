@@ -82,6 +82,8 @@ dependencies:
   sqflite: ^2.3.0
   path: ^1.8.3
 
+  device_info_plus: ^9.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

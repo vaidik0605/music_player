@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:music_player/components/app_image_assets.dart';
 import 'package:music_player/components/app_loader.dart';
@@ -8,16 +9,30 @@ import 'package:music_player/constants/asset_constant.dart';
 import 'package:music_player/constants/color_constant.dart';
 import 'package:music_player/utils/all_logs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class OfflineAudioQuery {
   static OnAudioQuery audioQuery = OnAudioQuery();
 
   Future<bool> requestPermission() async {
-    bool status = false;
-    if(!await audioQuery.permissionsStatus()){
-      status = await audioQuery.permissionsRequest();
+    DeviceInfoPlugin plugin = DeviceInfoPlugin();
+    AndroidDeviceInfo android = await plugin.androidInfo;
+    logs('android --> ${android.version.sdkInt}');
+    if (android.version.sdkInt >= 33) {
+      logs('I m here');
+      var status = await Permission.audio.request();
+      if(status.isGranted){
+        return true;
+      }else{
+        return false;
+      }
+    }else{
+      var status = await Permission.storage.request();
+      if(status.isGranted){
+        return true;
+      }
     }
-    return status;
+    return false;
   }
 
   Future<List<SongModel>> getSongs({
