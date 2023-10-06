@@ -17,9 +17,6 @@ import 'package:path_provider/path_provider.dart';
 class HomeController extends GetxController {
   final ValueNotifier<int> selectedIndex = ValueNotifier<int>(0);
   final PageController pageController = PageController();
-  final ScrollController scrollController = ScrollController();
-
-  RxString name = 'Guest'.obs;
   int selectedSortValue = 1;
   int selectedOrderTypeValue = 1;
 

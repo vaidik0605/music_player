@@ -55,4 +55,5 @@ class AppStringConstant {
   static const String noSongsFound = 'No Songs found';
   static const String noAlbumFound = 'No Album Found';
   static const String noArtistFound = 'No Artist Found';
+  static const String musicPlayer = 'Music player';
 }

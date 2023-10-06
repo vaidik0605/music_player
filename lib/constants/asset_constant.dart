@@ -8,4 +8,5 @@ class AssetConstant {
   //========================== Images ===========================
   static const String drawerImageDark = '${imagePath}header-dark.jpg';
   static const String drawerImageLight = '${imagePath}header.jpg';
+  static const String appLogo = '${imagePath}Logo.png';
 }

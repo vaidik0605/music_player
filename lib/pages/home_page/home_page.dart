@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -46,9 +45,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     logs("state ---> $state");
     switch (state) {
       case AppLifecycleState.resumed:
-        //AppOpenAdManager appOpenAdManager = AppOpenAdManager();
-        //appOpenAdManager.showAdIfAvailable();
-        //   await showAdIfReady();
         break;
 
       case AppLifecycleState.paused:
@@ -57,24 +53,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         break;
     }
   }
-
-  // Future<void> showAdIfReady() async {
-  //   if (isShowAds && appOpenAdId.isNotEmpty) {
-  //     if (isAppOpenAdInitialized) {
-  //       return;
-  //     }
-  //
-  //     bool isReady = (await AppLovinMAX.isAppOpenAdReady(appOpenAdId))!;
-  //     logs("isReady --> $isReady");
-  //     if (isReady) {
-  //       AppLovinMAX.showAppOpenAd(appOpenAdId);
-  //       audioPlayer.stop();
-  //     } else {
-  //       AppLovinMAX.loadAppOpenAd(appOpenAdId);
-  //       audioPlayer.play();
-  //     }
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -102,243 +80,120 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           body: SafeArea(
             child: Stack(
               children: [
-                PageView(
-                  physics: const CustomPhysics(),
-                  onPageChanged: (index) {
-                    controller.selectedIndex.value = index;
-                  },
-                  controller: controller.pageController,
+                Column(
                   children: [
-                    Stack(
-                      children: [
-                        NestedScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          controller: controller.scrollController,
-                          headerSliverBuilder: (
-                            BuildContext context,
-                            bool innerBoxScrolled,
-                          ) {
-                            return <Widget>[
-                              SliverAppBar(
-                                expandedHeight: 135.px,
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                toolbarHeight: 65.px,
-                                automaticallyImplyLeading: false,
-                                flexibleSpace: LayoutBuilder(
-                                  builder: (context, constraints) {
-                                    return FlexibleSpaceBar(
-                                      collapseMode: CollapseMode.parallax,
-                                      background: GestureDetector(
-                                        onTap: () async {
-                                          await showTextInputDialog(
-                                            context: context,
-                                            title: AppStringConstant.name,
-                                            initialText: controller.name.value,
-                                            keyboardType: TextInputType.name,
-                                            onSubmitted: (value) {
-                                              controller.name.value =
-                                                  value.trim();
-                                              Get.back();
-                                            },
-                                          );
-                                        },
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: <Widget>[
-                                            SizedBox(height: 45.px),
-                                            Row(
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: 15.px),
-                                                  child: AppText(
-                                                    title: AppStringConstant
-                                                        .hiThere,
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 30.px,
-                                                    fontColor: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Padding(
-                                              padding: EdgeInsets.only(
-                                                left: 15.0.px,
-                                              ),
-                                              child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
-                                                children: [
-                                                  Obx(() => AppText(
-                                                      title:
-                                                          controller.name.value,
-                                                      fontSize: 20.px,
-                                                      fontWeight:
-                                                          FontWeight.w500)),
-                                                  Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 20.px,
-                                                          left: 5.px),
-                                                      child: Icon(Icons.edit,
-                                                          size: 10.px)),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                    Builder(
+                        builder: (context) => Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        top: 8.0.px,
+                                        left: 4.0.px,
+                                      ),
+                                      child: Transform.rotate(
+                                        angle: 22 / 7 * 2,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.horizontal_split_rounded,
+                                          ),
+                                          color:
+                                              Theme.of(context).iconTheme.color,
+                                          onPressed: () =>
+                                              Scaffold.of(context).openDrawer(),
+                                          tooltip:
+                                              MaterialLocalizations.of(context)
+                                                  .openAppDrawerTooltip,
                                         ),
                                       ),
-                                    );
-                                  },
+                                    ),
+                                    Expanded(
+                                      child: GestureDetector(
+                                        child: Container(
+                                          height: 50.px,
+                                          padding: EdgeInsets.all(2.0.px),
+                                          margin: EdgeInsets.only(right: 15.px),
+                                          // margin: EdgeInsets.zero,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(10.0.px),
+                                            color: ColorConstant.grey900,
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                color: ColorConstant.black26,
+                                                blurRadius: 5.0,
+                                                offset: Offset(1.5, 1.5),
+                                                // shadow direction: bottom right
+                                              )
+                                            ],
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              SizedBox(width: 10.0.px),
+                                              Icon(
+                                                CupertinoIcons.search,
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary,
+                                              ),
+                                              SizedBox(width: 10.0.px),
+                                              AppText(
+                                                  title: AppStringConstant
+                                                      .songsAlbumsArtis,
+                                                  fontSize: 16.px,
+                                                  fontWeight:
+                                                      FontWeight.normal),
+                                            ],
+                                          ),
+                                        ),
+                                        onTap: () => Get.toNamed(
+                                            RouteConstant.searchRoute),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              SliverAppBar(
-                                automaticallyImplyLeading: false,
-                                pinned: true,
-                                backgroundColor: Colors.transparent,
-                                elevation: 0,
-                                stretch: true,
-                                toolbarHeight: 65.px,
-                                bottom: PreferredSize(
+                                PreferredSize(
                                     preferredSize: Size.fromHeight(40.px),
                                     child: shuffleView(controller)),
-                                title: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: AnimatedBuilder(
-                                    animation: controller.scrollController,
-                                    builder: (context, child) {
-                                      return Column(
-                                        children: [
-                                          GestureDetector(
-                                            child: AnimatedContainer(
-                                              width: (!controller
-                                                          .scrollController
-                                                          .hasClients ||
-                                                      controller
-                                                              .scrollController
-                                                              // ignore: invalid_use_of_protected_member
-                                                              .positions
-                                                              .length >
-                                                          1)
-                                                  ? MediaQuery.of(context)
-                                                      .size
-                                                      .width
-                                                  : max(
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width -
-                                                          controller
-                                                              .scrollController
-                                                              .offset
-                                                              .roundToDouble(),
-                                                      MediaQuery.of(context)
-                                                              .size
-                                                              .width -
-                                                          75.px,
-                                                    ),
-                                              height: 50.px,
-                                              duration: const Duration(
-                                                milliseconds: 150,
-                                              ),
-                                              padding: EdgeInsets.all(2.0.px),
-                                              // margin: EdgeInsets.zero,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                  10.0.px,
-                                                ),
-                                                color: ColorConstant.grey900,
-                                                boxShadow: const [
-                                                  BoxShadow(
-                                                    color:
-                                                        ColorConstant.black26,
-                                                    blurRadius: 5.0,
-                                                    offset: Offset(1.5, 1.5),
-                                                    // shadow direction: bottom right
-                                                  )
-                                                ],
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  SizedBox(
-                                                    width: 10.0.px,
-                                                  ),
-                                                  Icon(
-                                                    CupertinoIcons.search,
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 10.0.px,
-                                                  ),
-                                                  AppText(
-                                                      title: AppStringConstant
-                                                          .songsAlbumsArtis,
-                                                      fontSize: 16.px,
-                                                      fontWeight:
-                                                          FontWeight.normal),
-                                                ],
-                                              ),
-                                            ),
-                                            onTap: () => Get.toNamed(
-                                                RouteConstant.searchRoute),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ];
-                          },
-                          body: (controller.isLoading)
-                              ? const AppLoader()
-                              : (controller.songs.isEmpty)
-                                  ? const Center(
-                                      child: AppText(
-                                          title: AppStringConstant.noSong),
-                                    )
-                                  : const MusicPage(),
-                        ),
-                        Builder(
-                          builder: (context) => Padding(
-                            padding: const EdgeInsets.only(
-                              top: 8.0,
-                              left: 4.0,
-                            ),
-                            child: Transform.rotate(
-                              angle: 22 / 7 * 2,
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.horizontal_split_rounded,
-                                ),
-                                color: Theme.of(context).iconTheme.color,
-                                onPressed: () =>
-                                    Scaffold.of(context).openDrawer(),
-                                tooltip: MaterialLocalizations.of(context)
-                                    .openAppDrawerTooltip,
-                              ),
-                            ),
+                              ],
+                            )),
+                    Expanded(
+                      child: PageView(
+                        physics: const CustomPhysics(),
+                        onPageChanged: (index) {
+                          controller.selectedIndex.value = index;
+                        },
+                        controller: controller.pageController,
+                        children: [
+                          Stack(
+                            children: [
+                              (controller.isLoading)
+                                  ? const AppLoader()
+                                  : (controller.songs.isEmpty)
+                                      ? const Center(
+                                          child: AppText(
+                                              title: AppStringConstant.noSong),
+                                        )
+                                      : const MusicPage(),
+                            ],
                           ),
-                        ),
-                      ],
+                          (controller.albumsKeyList.isEmpty &&
+                                  controller.albums.isEmpty)
+                              ? const Center(
+                                  child: AppText(
+                                      title: AppStringConstant.noAlbumFound))
+                              : const AlbumPage(),
+                          (controller.artisKeyList.isEmpty &&
+                                  controller.artists.isEmpty)
+                              ? const Center(
+                                  child: AppText(
+                                      title: AppStringConstant.noArtistFound))
+                              : const ArtistPage(),
+                          const PlaylistPage(),
+                        ],
+                      ),
                     ),
-                    (controller.albumsKeyList.isEmpty &&
-                            controller.albums.isEmpty)
-                        ? const Center(
-                            child:
-                                AppText(title: AppStringConstant.noAlbumFound))
-                        : const AlbumPage(),
-                    (controller.artisKeyList.isEmpty &&
-                            controller.artists.isEmpty)
-                        ? const Center(
-                            child:
-                                AppText(title: AppStringConstant.noArtistFound))
-                        : const ArtistPage(),
-                    const PlaylistPage(),
                   ],
                 ),
                 const Positioned(
@@ -346,74 +201,71 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ],
             ),
           ),
-          bottomNavigationBar: SafeArea(
-            child: ValueListenableBuilder(
-              valueListenable: controller.selectedIndex,
-              builder: (BuildContext context, int indexValue, Widget? child) {
-                return AnimatedContainer(
-                  duration: const Duration(milliseconds: 100),
-                  height: 150.px,
-                  child: Column(
-                    children: [
-                      SalomonBottomBar(
-                        currentIndex: indexValue,
-                        onTap: (index) => controller.onItemTapped(index),
-                        items: [
-                          SalomonBottomBarItem(
-                            icon: const Icon(Icons.music_note),
-                            title: AppText(
-                                title: AppStringConstant.songs,
-                                fontColor:
-                                    Theme.of(context).colorScheme.secondary),
-                            selectedColor:
-                                Theme.of(context).colorScheme.secondary,
+          bottomNavigationBar: ValueListenableBuilder(
+            valueListenable: controller.selectedIndex,
+            builder: (BuildContext context, int indexValue, Widget? child) {
+              return Container(
+                height: 150.px,
+                child: Column(
+                  children: [
+                    SalomonBottomBar(
+                      currentIndex: indexValue,
+                      onTap: (index) => controller.onItemTapped(index),
+                      items: [
+                        SalomonBottomBarItem(
+                          icon: const Icon(Icons.music_note),
+                          title: AppText(
+                              title: AppStringConstant.songs,
+                              fontColor:
+                                  Theme.of(context).colorScheme.secondary),
+                          selectedColor:
+                              Theme.of(context).colorScheme.secondary,
+                        ),
+                        SalomonBottomBarItem(
+                          icon: const Icon(Icons.album),
+                          title: AppText(
+                              title: AppStringConstant.album,
+                              fontColor:
+                                  Theme.of(context).colorScheme.secondary),
+                          selectedColor:
+                              Theme.of(context).colorScheme.secondary,
+                        ),
+                        SalomonBottomBarItem(
+                          icon: AppImageAsset(
+                            image: AssetConstant.icArtist,
+                            fit: BoxFit.cover,
+                            height: 20.px,
+                            width: 20.px,
+                            color: (indexValue == 2)
+                                ? Theme.of(context).colorScheme.secondary
+                                : ColorConstant.white,
                           ),
-                          SalomonBottomBarItem(
-                            icon: const Icon(Icons.album),
-                            title: AppText(
-                                title: AppStringConstant.album,
-                                fontColor:
-                                    Theme.of(context).colorScheme.secondary),
-                            selectedColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                          SalomonBottomBarItem(
-                            icon: AppImageAsset(
-                              image: AssetConstant.icArtist,
-                              fit: BoxFit.cover,
-                              height: 20.px,
-                              width: 20.px,
-                              color: (indexValue == 2)
-                                  ? Theme.of(context).colorScheme.secondary
-                                  : ColorConstant.white,
-                            ),
-                            title: AppText(
-                                title: AppStringConstant.artist,
-                                fontColor:
-                                    Theme.of(context).colorScheme.secondary),
-                            selectedColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                          SalomonBottomBarItem(
-                            icon: const Icon(Icons.my_library_music_rounded),
-                            title: AppText(
-                                title: AppStringConstant.playlist,
-                                fontColor:
-                                    Theme.of(context).colorScheme.secondary),
-                            selectedColor:
-                                Theme.of(context).colorScheme.secondary,
-                          ),
-                        ],
-                      ),
-                      if (adModel.data != null &&
-                          adModel.data!.gBanner != null &&
-                          adModel.data!.gBanner!.isNotEmpty)
-                        AdService.createGoogleBannerAd(height: 80.px),
-                    ],
-                  ),
-                );
-              },
-            ),
+                          title: AppText(
+                              title: AppStringConstant.artist,
+                              fontColor:
+                                  Theme.of(context).colorScheme.secondary),
+                          selectedColor:
+                              Theme.of(context).colorScheme.secondary,
+                        ),
+                        SalomonBottomBarItem(
+                          icon: const Icon(Icons.my_library_music_rounded),
+                          title: AppText(
+                              title: AppStringConstant.playlist,
+                              fontColor:
+                                  Theme.of(context).colorScheme.secondary),
+                          selectedColor:
+                              Theme.of(context).colorScheme.secondary,
+                        ),
+                      ],
+                    ),
+                    if (adModel.data != null &&
+                        adModel.data!.gBanner != null &&
+                        adModel.data!.gBanner!.isNotEmpty)
+                      AdService.createGoogleBannerAd(height: 80.px),
+                  ],
+                ),
+              );
+            },
           ),
         );
       },
@@ -531,9 +383,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                               else
                                 const SizedBox(),
                               SizedBox(width: 10.px),
-                              AppText(
-                                title: e,
-                              ),
+                              AppText(title: e),
                             ],
                           ),
                         ),
@@ -547,8 +397,6 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                   homeController.selectedSortValue = value;
                 } else {
                   homeController.selectedOrderTypeValue = value - 6;
-                  logs(
-                      "homeController.selectedOrderTypeValue ---------> ${homeController.selectedOrderTypeValue}");
                 }
                 MusicPageController musicPageController =
                     Get.put(MusicPageController());
@@ -577,7 +425,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
             stretch: true,
             expandedHeight: MediaQuery.of(context).size.height * 0.2,
             flexibleSpace: FlexibleSpaceBar(
-              title: const AppText(title: 'Music player'),
+              title: const AppText(title: AppStringConstant.musicPlayer),
               titlePadding: const EdgeInsets.only(bottom: 40.0),
               centerTitle: true,
               background: ShaderMask(
@@ -764,13 +612,9 @@ Future<void> showTextInputDialog({
             onPressed: () {
               onSubmitted(controller.text.trim());
             },
-            child: const Text(
-              AppStringConstant.ok,
-            ),
+            child: const Text(AppStringConstant.ok),
           ),
-          SizedBox(
-            width: 5.px,
-          ),
+          SizedBox(width: 5.px),
         ],
       );
     },
