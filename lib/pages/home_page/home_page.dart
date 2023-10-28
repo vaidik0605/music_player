@@ -204,8 +204,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
           bottomNavigationBar: ValueListenableBuilder(
             valueListenable: controller.selectedIndex,
             builder: (BuildContext context, int indexValue, Widget? child) {
-              return Container(
-                height: 150.px,
+              return SizedBox(
+                height: 110.px,
                 child: Column(
                   children: [
                     SalomonBottomBar(
@@ -261,7 +261,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
                     if (adModel.data != null &&
                         adModel.data!.gBanner != null &&
                         adModel.data!.gBanner!.isNotEmpty)
-                      AdService.createGoogleBannerAd(height: 80.px),
+                      Expanded(child: AdService.createGoogleBannerAd()),
+                    SizedBox(height: 3.px),
                   ],
                 ),
               );
